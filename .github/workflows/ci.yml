@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ローカルの開発環境(Node 22)に合わせる
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # ウォッチせず1回だけ実行し、カバレッジも測る
+      - name: Test
+        run: npm run test:coverage
+
+      # テストが失敗したときも、そこまでのカバレッジを見られるようにする
+      - name: Coverage summary
+        if: ${{ !cancelled() && hashFiles('coverage/quiz-museum-front/coverage-summary.json') != '' }}
+        run: node .github/scripts/coverage-summary.mjs coverage/quiz-museum-front/coverage-summary.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() && hashFiles('coverage/quiz-museum-front/index.html') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/quiz-museum-front
+          retention-days: 14
+
+      - name: Build
+        run: npm run build

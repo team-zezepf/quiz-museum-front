@@ -1,0 +1,35 @@
+.home {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.lead {
+  color: #6b7280;
+  margin: 0 0 32px;
+}
+
+.api-status {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.api-status.ok {
+  background: #e9f8f0;
+  color: #178a55;
+}
+
+.api-status.error {
+  background: #fdecec;
+  color: #c2373c;
+}
